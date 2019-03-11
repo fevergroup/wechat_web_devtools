@@ -53,6 +53,7 @@ RUN apt-get install -y nodejs
 # RUN mkdir -p $HOME/.wine32 \
 #   && WINEARCH=win32 WINEPREFIX=$HOME/.wine32 winecfg
 
-# COPY . /wxdt
+COPY . /wxdt
+RUN  sed s%'exec /bin/tini -- /usr/bin/supervisord -n -c'%'/usr/bin/supervisord -c'% -i /startup.sh
 # RUN /wxdt/bin/WeappVendor/wcc.exe
 # RUN /wxdt/bin/wxdt install
