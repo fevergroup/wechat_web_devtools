@@ -8,8 +8,8 @@ ENV HOME /root
 RUN echo "Asia/Shanghai" > /etc/timezone
 RUN dpkg-reconfigure -f noninteractive tzdata
 
-RUN sed -i 's#http://\(archive\|security\).ubuntu.com/#http://mirrors.aliyun.com/#' /etc/apt/sources.list \
-  && cat /etc/apt/sources.list
+# RUN sed -i 's#http://\(archive\|security\).ubuntu.com/#http://mirrors.aliyun.com/#' /etc/apt/sources.list \
+#   && cat /etc/apt/sources.list
 RUN apt-get update \
   && apt-get install -y --no-install-recommends --allow-unauthenticated \
     wget \
