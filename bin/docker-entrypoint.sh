@@ -11,7 +11,7 @@ sed s%'exec /bin/tini -- /usr/bin/supervisord -n -c'%'/usr/bin/supervisord -c'% 
 /startup.sh
 while [ true ]
 do
-  if [ -f "/wxdt/dist/nwjs_version" ]; then break; fi
+  if [ -f "/wxdt/dist/nwjs_version" ] && [ -d '/root/.config/wechat_web_devtools/WeappVendor/' ]; then break; fi
   echo "sleep 1s 等待 /startup.sh 准备完毕. "
   sleep 1s
 done
