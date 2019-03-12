@@ -53,8 +53,7 @@ RUN apt-get install -y nodejs
 # RUN mkdir -p $HOME/.wine32 \
 #   && WINEARCH=win32 WINEPREFIX=$HOME/.wine32 winecfg
 
-# ARG VERSION=v1.02.1902010
-ARG VERSION=master
+ARG VERSION=v1.02.1902010
 RUN wget -q -O /tmp/wxdt.tgz https://github.com/fevergroup/wechat_web_devtools/archive/${VERSION}.tar.gz
 RUN tar -xzf /tmp/wxdt.tgz -C /tmp && mv /tmp/wechat_web_devtools* /wxdt && rm -rf /tmp/wxdt.tgz
 # RUN /wxdt/bin/WeappVendor/wcc.exe
