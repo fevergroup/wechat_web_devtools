@@ -60,4 +60,6 @@ RUN tar -xzf /tmp/wxdt.tgz -C /tmp && mv /tmp/wechat_web_devtools* /wxdt && rm -
 # RUN /wxdt/bin/WeappVendor/wcc.exe
 # RUN /wxdt/bin/wxdt install
 
+RUN chmod +x /wxdt/bin/docker-entrypoint.sh
 ENTRYPOINT [ "/wxdt/bin/docker-entrypoint.sh" ]
+CMD []
