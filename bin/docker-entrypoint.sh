@@ -16,4 +16,5 @@ do
   sleep 1s
 done
 
+/wxdt/bin/wxdt install
 exec $@
