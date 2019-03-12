@@ -53,10 +53,11 @@ RUN apt-get install -y nodejs
 # RUN mkdir -p $HOME/.wine32 \
 #   && WINEARCH=win32 WINEPREFIX=$HOME/.wine32 winecfg
 
-ARG VERSION=v1.02.1902010
-RUN wget -O /tmp/wxdt.tgz https://github.com/fevergroup/wechat_web_devtools/archive/${VERSION}.tar.gz
+# ARG VERSION=v1.02.1902010
+ARG VERSION=master
+RUN wget -q -O /tmp/wxdt.tgz https://github.com/fevergroup/wechat_web_devtools/archive/${VERSION}.tar.gz
 RUN tar -xzf /tmp/wxdt.tgz -C /tmp && mv /tmp/wechat_web_devtools* /wxdt && rm -rf /tmp/wxdt.tgz
 # RUN /wxdt/bin/WeappVendor/wcc.exe
 # RUN /wxdt/bin/wxdt install
 
-RUN sed s%'exec /bin/tini -- /usr/bin/supervisord -n -c'%'/usr/bin/supervisord -c'% -i /startup.sh
+ENTRYPOINT [ "/wxdt/bin/docker-entrypoint.sh" ]
