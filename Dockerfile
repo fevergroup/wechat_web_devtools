@@ -2,8 +2,6 @@
 # docker run -P -p 6080:80 --mount type=bind,source=$PWD,target=/weapps wxdt-desktop
 FROM dorowu/ubuntu-desktop-lxde-vnc:bionic
 
-ARG VERSION=v1.02.1902010
-
 ENV LANG C.UTF-8
 ENV DISPLAY :1.0
 ENV HOME /root
@@ -55,8 +53,10 @@ RUN apt-get install -y nodejs
 # RUN mkdir -p $HOME/.wine32 \
 #   && WINEARCH=win32 WINEPREFIX=$HOME/.wine32 winecfg
 
+ARG VERSION=v1.02.1902010
 RUN wget -O /tmp/wxdt.tgz https://github.com/fevergroup/wechat_web_devtools/archive/${VERSION}.tar.gz
 RUN mkdir -p /wxdt && tar -xzf /tmp/wxdt.tgz -C /wxdt && rm -rf /tmp/wxdt.tgz
-RUN sed s%'exec /bin/tini -- /usr/bin/supervisord -n -c'%'/usr/bin/supervisord -c'% -i /startup.sh
 # RUN /wxdt/bin/WeappVendor/wcc.exe
 # RUN /wxdt/bin/wxdt install
+
+RUN sed s%'exec /bin/tini -- /usr/bin/supervisord -n -c'%'/usr/bin/supervisord -c'% -i /startup.sh
