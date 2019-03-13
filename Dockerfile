@@ -47,10 +47,6 @@ RUN dpkg --add-architecture i386 \
   && apt-get update \
   && apt-get install -y --no-install-recommends --allow-unauthenticated winehq-stable
 
-# install nodejs
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
-RUN apt-get install -y nodejs
-
 # RUN mkdir -p $HOME/.wine32 \
 #   && WINEARCH=win32 WINEPREFIX=$HOME/.wine32 winecfg
 
