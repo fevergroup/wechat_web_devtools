@@ -22,7 +22,6 @@ RUN apt-get update \
     ca-certificates \
     openssl \
     python2.7 \
-    git \
     gnupg2
 
 RUN echo "\n\
@@ -49,7 +48,7 @@ RUN dpkg --add-architecture i386 \
 
 # install nodejs
 RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
-RUN apt-get install -y nodejs
+RUN apt-get install -y nodejs git
 
 # RUN mkdir -p $HOME/.wine32 \
 #   && WINEARCH=win32 WINEPREFIX=$HOME/.wine32 winecfg
