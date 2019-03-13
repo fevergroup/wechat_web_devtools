@@ -22,7 +22,8 @@ RUN apt-get update \
     ca-certificates \
     openssl \
     python2.7 \
-    gnupg2
+    gnupg2 \
+    git
 
 RUN echo "\n\
 [program:wxdt]\n\
@@ -45,10 +46,6 @@ RUN dpkg --add-architecture i386 \
   && apt-add-repository 'deb https://dl.winehq.org/wine-builds/ubuntu/ bionic main' \
   && apt-get update \
   && apt-get install -y --no-install-recommends --allow-unauthenticated winehq-stable
-
-# install nodejs
-RUN curl -sL https://deb.nodesource.com/setup_10.x | bash -
-RUN apt-get install -y nodejs git
 
 # RUN mkdir -p $HOME/.wine32 \
 #   && WINEARCH=win32 WINEPREFIX=$HOME/.wine32 winecfg
