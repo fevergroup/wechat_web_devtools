@@ -22,6 +22,7 @@ RUN apt-get update \
     ca-certificates \
     openssl \
     python2.7 \
+    git \
     gnupg2
 
 RUN echo "\n\
