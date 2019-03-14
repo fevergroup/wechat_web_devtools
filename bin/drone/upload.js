@@ -9,13 +9,23 @@ try{
 }catch(err){
 }
 
-const exec = (cmd='')=>shell.execFileSync("sh", ["-c", cmd ], { stdio: "inherit" });
+/**
+ * @param {string} file 
+ * @param {string[]} args 
+ */
+const exec = (file='',args=[])=>new Promise((rl,rj)=>{
+  const proc = shell.spawn(file,  args, {  stdio: 'inherit' })
+  proc.on('exit',()=>{ rl() })
+  proc.on('error', err=>rj(err) )
+})
 
-const uploadCmd = ()=>exec(`/wxdt/bin/cli --upload ${version}@$(pwd) --upload-desc '${version}'`)
+const shExec = (cmd='')=>exec('sh',['-c',cmd])
+
+const uploadCmd = ()=>shExec(`/wxdt/bin/cli --upload ${version}@$(pwd) --upload-desc '${version}'`)
 
 const formatTime = (time='')=>new Date(Number(time)*1000).toLocaleString('chinese',{ timeZone:'Asia/Shanghai' })
 
-function SendRequestLoginMessage() {
+async function SendRequestLoginMessage() {
 
   let report = {
     msgtype: 'link',
@@ -26,24 +36,24 @@ function SendRequestLoginMessage() {
     }
   }
   
-  shell.execFileSync("curl", [
+  await exec("curl", [
     '-X', 'POST',
     '-H', `Content-Type:application/json; charset=UTF-8`,
     '-d', `'`+JSON.stringify(report)+`'`,
     env.get('report_hook'),
-  ], { stdio: "inherit" });
+  ]);
   
-  exec('/wxdt/bin/cli --login')
+  shExec('/wxdt/bin/cli --login')
 
 }
 
 async function main() {
 
   try{
-    uploadCmd()
+    await uploadCmd()
   }catch(err){
-    SendRequestLoginMessage()
-    uploadCmd()
+    await SendRequestLoginMessage()
+    await uploadCmd()
   }
   
 }
