@@ -54,6 +54,6 @@ COPY . /wxdt
 # RUN /wxdt/bin/WeappVendor/wcc.exe
 # RUN /wxdt/bin/wxdt install
 
-RUN chmod +x /wxdt/bin/docker-entrypoint.sh
+RUN chmod +x /wxdt/bin/docker-entrypoint.sh /wxdt/bin/wxapp-upload
 ENTRYPOINT [ "/wxdt/bin/docker-entrypoint.sh" ]
 CMD []
