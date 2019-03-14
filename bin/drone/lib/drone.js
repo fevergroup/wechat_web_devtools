@@ -1,4 +1,6 @@
 
+const env = require('./env')
+
 /**
  * @typedef { 'failure'|'success' } BUILD_STATUS
  * @typedef { 'push' | 'pull_request' | 'tag' } BUILD_EVENT
