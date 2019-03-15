@@ -30,12 +30,14 @@ async function waitLogined(){
       case 'SUCCESS':
         return
       case 'PENDING':
+        console.log('等待登录完成...')
         continue;
       default:
         if(loginStatusMsg){
           throw new Error(`登录失败. 登录状态: ${loginStatus} , 错误原因: ${loginStatusMsg} `)
         }
         if(hasRequestedLogin){
+          console.log('等待登录初始化完成')
           continue
         }else{
           throw new Error(`请先调用登录. 当前返回是 ${JSON.stringify(res)}`)
