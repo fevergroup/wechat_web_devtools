@@ -2,8 +2,13 @@
 
  /wxdt/bin/cli -u $version@$(pwd) --upload-desc $version
 
-docker run --rm -ti --name wxapp -v /tmp/aaa:/root/aaa -v /root/.config/wechat_web_devtools/Default/:/root/.config/wechat_web_devtools/Default/  -p 7070:80 -p 5900:5900 fevergroup/wechat_devtools bash
-
+docker run --rm -ti --name wxapp \
+  -v /root/weapp/:/root/weapp/ \
+  --workdir /root/weapp \
+  -v /root/.config/wechat_web_devtools/Default/:/root/.config/wechat_web_devtools/Default/ \
+  -p 7070:80 -p 5900:5900 \
+  fevergroup/wechat_devtools \
+  /wxdt/bin/wxapp-upload
 
 # Linux微信web开发者工具
 
