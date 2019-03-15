@@ -20,6 +20,7 @@ const uploadCmd = (flag='0')=>shExec(`flag=${flag} /wxdt/bin/cli --upload ${vers
 
 const formatTime = (time='')=>new Date(Number(time)*1000).toLocaleString('chinese',{ timeZone:'Asia/Shanghai' })
 
+let hasRequestedLogin = 0
 async function waitLogined(){
   while(true){
     sleep(1e3)
@@ -34,8 +35,12 @@ async function waitLogined(){
         if(loginStatusMsg){
           throw new Error(`登录失败. 登录状态: ${loginStatus} , 错误原因: ${loginStatusMsg} `)
         }
-        throw new Error('请先调用登录.')
-        return
+        if(hasRequestedLogin){
+          continue
+        }else{
+          throw new Error(`请先调用登录. 当前返回是 ${JSON.stringify(res)}`)
+        }
+        break;
     }
   }
 }
@@ -60,6 +65,7 @@ async function waitLogin() {
   console.log('\n')
   
   shExec(`curl 127.0.0.1:${port}/login?format=terminal`)
+  hasRequestedLogin = 1
   await waitLogined()
   
 }
