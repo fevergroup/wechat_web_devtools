@@ -1,7 +1,12 @@
-const shell = require("child_process");
 const drone = require('./lib/drone')
 const env = require('./lib/env')
 const path = require('path')
+const config = require('./config')
+const request = require('./requset')
+const exec = require('./exec')
+const sleep = (time = 1000) => new Promise(rl => setTimeout(rl, time))
+
+const port = `$(cat ${config.idePortFilepath})`
 
 let version = 'dev'
 try{
@@ -9,53 +14,71 @@ try{
 }catch(err){
 }
 
-/**
- * @param {string} file 
- * @param {string[]} args 
- */
-const exec = (file='',args=[])=>new Promise((rl,rj)=>{
-  const proc = shell.spawn(file,  args, {  stdio: 'inherit' })
-  proc.on('exit',()=>{ rl() })
-  proc.on('error', err=>rj(err) )
-})
-
 const shExec = (cmd='')=>exec('sh',['-c',cmd])
 
-const uploadCmd = ()=>shExec(`/wxdt/bin/cli --upload ${version}@$(pwd) --upload-desc '${version}'`)
+const uploadCmd = (flag='0')=>shExec(`flag=${flag} /wxdt/bin/cli --upload ${version}@$(pwd) --upload-desc '${version}'`)
 
 const formatTime = (time='')=>new Date(Number(time)*1000).toLocaleString('chinese',{ timeZone:'Asia/Shanghai' })
 
-async function SendRequestLoginMessage() {
+async function waitLogined(){
+  while(true){
+    sleep(1e3)
+    let res = await request('/loginresult')
+    let { loginStatus, loginStatusMsg } = res
+    switch (loginStatus) {
+      case 'SUCCESS':
+        return
+      case 'PENDING':
+        continue;
+      default:
+        if(loginStatusMsg){
+          throw new Error(`登录失败. 登录状态: ${loginStatus} , 错误原因: ${loginStatusMsg} `)
+        }
+        throw new Error('请先调用登录.')
+        return
+    }
+  }
+}
 
+async function waitLogin() {
+  
   let report = {
-    msgtype: 'link',
-    link: {
+    msgtype: 'markdown',
+    markdown: {
       'title': `${drone.repo_name} ${drone.build_number} 微信小程序上传需要登录`,
       'text': `微信开发工具登录已过期, 需要重新扫码登录. 打开链接地址进行扫码. \n发送时间: ${formatTime(Date.now().toString())}`,
       'messageUrl': drone.build_link,
     }
   }
-  
+
   await exec("curl", [
     '-X', 'POST',
     '-H', `Content-Type:application/json; charset=UTF-8`,
-    '-d', `'`+JSON.stringify(report)+`'`,
+    '-d', JSON.stringify(report),
     env.get('report_hook'),
   ]);
+  console.log('\n')
   
-  shExec('/wxdt/bin/cli --login')
-
+  shExec(`curl 127.0.0.1:${port}/login?format=terminal`)
+  await waitLogined()
+  
 }
 
 async function main() {
 
   try{
-    await uploadCmd()
+    await uploadCmd('first')
   }catch(err){
-    await SendRequestLoginMessage()
-    await uploadCmd()
+    await waitLogin()
+    await uploadCmd('after_login')
   }
   
 }
 
 main()
+.catch(
+  err=>{
+    console.error(err)
+    process.exitCode = 1
+  }
+)
